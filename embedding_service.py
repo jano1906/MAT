@@ -8,9 +8,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from transformer import make_model, GraphTransformer
 from featurization.data_utils import load_data_from_smiles, construct_loader
 
-MODEL_PATHS = {
-    "MAT_pretrained": os.path.join(os.path.dirname(__file__), "pretrained_weights.pt"),
-}
+def checkpoint_path(model_name: str):
+    return os.path.join(os.path.dirname(__file__), f"{model_name}.ckpt")
+
 CHECKPOINT_DOWNLOAD_LINKS = {
     "MAT_pretrained": "https://drive.google.com/open?id=11-TZj8tlnD7ykQGliO9bCrySJNBnYD2k",
 }
@@ -25,8 +25,8 @@ class State:
     initialized: bool = False
 
 def setup(model_name: str, device: str, batch_size: int) -> None:
-    if not os.path.isfile(MODEL_PATHS[model_name]):
-        raise RuntimeError(f"Download checkpoint '{CHECKPOINT_DOWNLOAD_LINKS[model_name]}' and save it as '{MODEL_PATHS[model_name]}'.")
+    if not os.path.isfile(checkpoint_path(model_name)):
+        raise RuntimeError(f"Download checkpoint '{CHECKPOINT_DOWNLOAD_LINKS[model_name]}' and save it as '{checkpoint_path(model_name)}'.")
     
     model_params = {
     'd_atom': 28,
@@ -43,7 +43,7 @@ def setup(model_name: str, device: str, batch_size: int) -> None:
     'aggregation_type': 'mean',}
     model = make_model(**model_params)
     model.generator.proj = torch.nn.Identity()
-    pretrained_state_dict = torch.load(MODEL_PATHS[model_name])
+    pretrained_state_dict = torch.load(checkpoint_path(model_name))
     model_state_dict = model.state_dict()
     for name, param in pretrained_state_dict.items():
         if 'generator' in name:
