@@ -267,7 +267,7 @@ def mol_collate_func(batch):
         distance_list.append(pad_array(molecule.distance_matrix, (max_size, max_size)))
         features_list.append(pad_array(molecule.node_features, (max_size, molecule.node_features.shape[1])))
 
-    return [FloatTensor(features) for features in (adjacency_list, features_list, distance_list, labels)]
+    return [FloatTensor(np.array(features)) for features in (adjacency_list, features_list, distance_list, labels)]
 
 
 def construct_dataset(x_all, y_all):
