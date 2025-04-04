@@ -12,7 +12,7 @@ def checkpoint_path(model_name: str):
     return os.path.join(os.path.dirname(__file__), f"{model_name}.ckpt")
 
 CHECKPOINT_DOWNLOAD_LINKS = {
-    "MAT_pretrained": "https://drive.google.com/open?id=11-TZj8tlnD7ykQGliO9bCrySJNBnYD2k",
+    "MAT": "https://drive.google.com/open?id=11-TZj8tlnD7ykQGliO9bCrySJNBnYD2k",
 }
 
 class State:
