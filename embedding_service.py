@@ -3,7 +3,7 @@ import os
 import torch
 import numpy as np
 from tqdm import tqdm
-from typing import Optional, List
+from typing import Optional, List, Literal
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from transformer import make_model, GraphTransformer
 from featurization.data_utils import load_data_from_smiles, construct_loader
@@ -24,7 +24,7 @@ class State:
 
     initialized: bool = False
 
-def setup(model_name: str, device: str, batch_size: int) -> None:
+def setup(model_name: str, device: Literal["cpu", "cuda"], batch_size: int) -> None:
     if not os.path.isfile(checkpoint_path(model_name)):
         raise RuntimeError(f"Download checkpoint '{CHECKPOINT_DOWNLOAD_LINKS[model_name]}' and save it as '{checkpoint_path(model_name)}'.")
     
