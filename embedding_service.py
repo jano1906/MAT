@@ -70,7 +70,12 @@ def encode(smiles: List[str]) -> np.ndarray:
     with torch.no_grad():
         for batch in tqdm(data_loader, f"Encoding with {State.model_name}"):
             adjacency_matrix, node_features, distance_matrix, y = batch
+            
+            adjacency_matrix = adjacency_matrix.to(State.device)
+            node_features = node_features.to(State.device)
+            distance_matrix = distance_matrix.to(State.device)
             batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
+            
             output = State.model(node_features, batch_mask, adjacency_matrix, distance_matrix, None)
             outputs.append(output)
             

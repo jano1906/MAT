@@ -17,13 +17,6 @@ from rdkit.Chem import MolFromSmiles
 from sklearn.metrics import pairwise_distances
 from torch.utils.data import Dataset
 
-use_cuda = torch.cuda.is_available()
-FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
-LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
-IntTensor = torch.cuda.IntTensor if use_cuda else torch.IntTensor
-DoubleTensor = torch.cuda.DoubleTensor if use_cuda else torch.DoubleTensor
-
-
 def load_data_from_df(dataset_path, add_dummy_node=True, one_hot_formal_charge=False, use_data_saving=True):
     """Load and featurize data stored in a CSV file.
 
@@ -267,7 +260,7 @@ def mol_collate_func(batch):
         distance_list.append(pad_array(molecule.distance_matrix, (max_size, max_size)))
         features_list.append(pad_array(molecule.node_features, (max_size, molecule.node_features.shape[1])))
 
-    return [FloatTensor(np.array(features)) for features in (adjacency_list, features_list, distance_list, labels)]
+    return [torch.tensor(np.array(features)) for features in (adjacency_list, features_list, distance_list, labels)]
 
 
 def construct_dataset(x_all, y_all):
