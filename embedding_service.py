@@ -24,7 +24,7 @@ class State:
 
     initialized: bool = False
 
-def setup(model_name: str, device: Literal["cpu", "cuda"], batch_size: int) -> None:
+def setup(model_name: str, device: Literal["cpu", "cuda"], batch_size: int):
     if not os.path.isfile(checkpoint_path(model_name)):
         raise RuntimeError(f"Download checkpoint '{CHECKPOINT_DOWNLOAD_LINKS[model_name]}' and save it as '{checkpoint_path(model_name)}'.")
     
@@ -60,7 +60,10 @@ def setup(model_name: str, device: Literal["cpu", "cuda"], batch_size: int) -> N
     State.batch_size = batch_size
     State.initialized = True
 
-def encode(smiles: List[str]) -> np.ndarray:
+def encode(input_file: str, output_file: str):
+    with open(input_file, "r") as f:
+        smiles = f.readlines()
+    
     if not State.initialized:
         raise RuntimeError("Service is not setup, call 'setup' before 'encode'.")
     
@@ -81,4 +84,5 @@ def encode(smiles: List[str]) -> np.ndarray:
             
     outputs = torch.concat(outputs)
     outputs = outputs.cpu().numpy()
-    return outputs
+    with open(output_file, "wb") as f:
+        np.save(f, outputs)
