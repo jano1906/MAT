@@ -80,9 +80,9 @@ def encode(input_file: str, output_file: str):
             batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
             
             output = State.model(node_features, batch_mask, adjacency_matrix, distance_matrix, None)
-            outputs.append(output)
+            outputs.append(output.cpu())
             
     outputs = torch.concat(outputs)
-    outputs = outputs.cpu().numpy()
+    outputs = outputs.numpy()
     with open(output_file, "wb") as f:
         np.save(f, outputs)
